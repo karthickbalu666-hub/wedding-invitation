@@ -1,437 +1,329 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
+
+const weddingDate = new Date("2026-10-25T06:00:00");
+
+function getTimeLeft(target) {
+  const difference = target.getTime() - Date.now();
+
+  if (difference <= 0) {
+    return {
+      days: 0,
+      hours: 0,
+      minutes: 0,
+      seconds: 0,
+    };
+  }
+
+  return {
+    days: Math.floor(difference / (1000 * 60 * 60 * 24)),
+    hours: Math.floor((difference / (1000 * 60 * 60)) % 24),
+    minutes: Math.floor((difference / (1000 * 60)) % 60),
+    seconds: Math.floor((difference / 1000) % 60),
+  };
+}
 
 export default function Home() {
-  const [opening, setOpening] = useState(false);
-  const [revealed, setRevealed] = useState(false);
-  const [dateRevealed, setDateRevealed] = useState(false);
+  const [opened, setOpened] = useState(false);
+  const [timeLeft, setTimeLeft] = useState(getTimeLeft(weddingDate));
 
-  const openInvitation = () => {
-    if (opening) return;
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setTimeLeft(getTimeLeft(weddingDate));
+    }, 1000);
 
-    setOpening(true);
-
-    // Wait for envelope opening animation
-    setTimeout(() => {
-      setRevealed(true);
-    }, 1800);
-  };
+    return () => clearInterval(timer);
+  }, []);
 
   return (
-    <main className="min-h-screen bg-[#eee8dc] flex justify-center">
+    <main className={`wedding-page ${opened ? "page-opened" : ""}`}>
+      {!opened ? (
+        <section className="luxury-cover">
+          <div className="cover-glow cover-glow-one" />
+          <div className="cover-glow cover-glow-two" />
 
-      {/* =====================================================
-          ENVELOPE
-      ====================================================== */}
+          <div className="cover-petals" aria-hidden="true">
+            <span>✦</span>
+            <span>✿</span>
+            <span>❋</span>
+            <span>✦</span>
+            <span>✿</span>
+            <span>❋</span>
+          </div>
 
-      {!revealed && (
-        <section
-          onClick={openInvitation}
-          className="relative w-full max-w-2xl min-h-screen
-          overflow-hidden cursor-pointer
-          bg-gradient-to-b from-[#8f1717] via-[#c52b1d] to-[#ff5a19]
-          flex items-center justify-center"
-        >
+          <div className="cover-frame">
+            <p className="cover-top">A SPECIAL INVITATION AWAITS</p>
 
-          {/* Glow behind seal */}
-          <div
-            className={`absolute w-80 h-80 rounded-full
-            bg-orange-300/40 blur-3xl
-            transition-all duration-1000
-            ${opening ? "scale-[2.5] opacity-100" : "scale-100 opacity-0"}`}
-          />
+            <div className="cover-line">
+              <span />
+              <b>♡</b>
+              <span />
+            </div>
 
-          {/* Envelope body */}
-          <div className="absolute inset-x-5 top-24 bottom-20
-            rounded-t-[35px]
-            bg-gradient-to-b from-[#e33a20] to-[#ff6a1c]
-            shadow-2xl overflow-hidden"
-          >
+            <p className="cover-kicker">K &amp; P</p>
 
-            {/* TOP FLAP */}
-            <div
-              className={`absolute top-0 left-0 right-0
-              h-[48%] z-30 origin-top
-              bg-gradient-to-b from-[#b91f1c] to-[#f04a20]
-              transition-transform duration-[1600ms]
-              ease-in-out
-              ${
-                opening
-                  ? "rotate-x-[-180deg] -translate-y-[15%]"
-                  : ""
-              }`}
-              style={{
-                clipPath: "polygon(0 0, 100% 0, 50% 100%)",
-                transformOrigin: "top center",
-              }}
-            />
+            <h1 className="cover-title">
+              Two Hearts
+              <br />
+              <em>One Journey</em>
+              <br />
+              Forever
+            </h1>
 
-            {/* INNER WHITE CARD */}
-            <div
-              className={`absolute left-[9%] right-[9%]
-              top-[25%] bottom-[12%]
-              bg-[#fffaf0]
-              rounded-sm
-              shadow-xl z-10
-              transition-all duration-[1500ms]
-              ${
-                opening
-                  ? "translate-y-[-12%] scale-100 opacity-100"
-                  : "translate-y-[20%] scale-90 opacity-0"
-              }`}
-            >
-              <div className="h-full flex flex-col
-                items-center justify-center text-center"
+            <div className="envelope-area">
+              <button
+                type="button"
+                className="luxury-envelope"
+                onClick={() => setOpened(true)}
+                aria-label="Open Karthick and Pavithra wedding invitation"
               >
+                <div className="envelope-back">
+                  <div className="envelope-texture" />
 
-                <p className="font-serif italic text-3xl text-[#77776d]">
-                  K
-                </p>
+                  <div className="envelope-flower envelope-flower-left">
+                    ❋
+                  </div>
 
-                <div className="flex items-center gap-3 mt-3">
-                  <span className="w-8 h-px bg-[#c6a66b]" />
-                  <span className="text-[#c6a66b]">♥</span>
-                  <span className="w-8 h-px bg-[#c6a66b]" />
+                  <div className="envelope-flower envelope-flower-left-small">
+                    ✿
+                  </div>
+
+                  <div className="envelope-flower envelope-flower-right">
+                    ✿
+                  </div>
+
+                  <div className="envelope-flower envelope-flower-right-small">
+                    ❋
+                  </div>
+
+                  <div className="envelope-detail detail-one" />
+                  <div className="envelope-detail detail-two" />
+                  <div className="envelope-detail detail-three" />
+                  <div className="envelope-detail detail-four" />
                 </div>
 
-                <p className="mt-4 font-serif italic text-2xl text-[#77776d]">
-                  P
-                </p>
+                <div className="envelope-flap" />
 
-              </div>
+                <div className="wax-seal">
+                  <span>K</span>
+                  <small>♥</small>
+                  <span>P</span>
+                </div>
+              </button>
             </div>
 
-            {/* LOWER ENVELOPE FOLD */}
-            <div
-              className="absolute bottom-0 left-0 right-0
-              h-[52%] z-20
-              bg-gradient-to-t from-[#ff4918] to-[#ff7024]"
-              style={{
-                clipPath: "polygon(0 0, 50% 52%, 100% 0, 100% 100%, 0 100%)",
-              }}
-            />
-
-          </div>
-
-
-          {/* =================================================
-              TAP TO REVEAL
-          ================================================== */}
-
-          <div
-            className={`relative z-50 flex flex-col
-            items-center text-center text-white
-            transition-all duration-700
-            ${opening ? "opacity-0 scale-125" : "opacity-100"}`}
-          >
-
-            <p className="font-serif italic text-3xl">
-              Tap to Reveal
-            </p>
-
-            {/* Wax Seal */}
-            <div
-              className="mt-8 w-36 h-36 rounded-full
-              bg-[#f5e6c8]
-              border-4 border-[#e1cda7]
-              shadow-[0_0_40px_rgba(255,230,160,0.6)]
-              flex items-center justify-center"
+            <button
+              type="button"
+              className="tap-open"
+              onClick={() => setOpened(true)}
             >
+              <span className="tap-icon">♡</span>
+              TAP TO OPEN
+            </button>
 
-              <div
-                className="w-28 h-28 rounded-full
-                border border-[#c5a875]
-                flex items-center justify-center"
-              >
-
-                <span className="font-serif italic
-                  text-4xl text-[#9f8558]"
-                >
-                  K ♥ P
-                </span>
-
-              </div>
-
-            </div>
-
-            <p className="mt-8 font-serif italic text-2xl">
-              To new beginnings!
-            </p>
-
+            <p className="cover-date">24 · 25 OCTOBER 2026</p>
           </div>
-
-
-          {/* Opening flash */}
-          <div
-            className={`absolute inset-0 z-[100]
-            bg-white pointer-events-none
-            transition-opacity duration-700
-            ${opening ? "opacity-80" : "opacity-0"}`}
-          />
-
         </section>
-      )}
-
-
-      {/* =====================================================
-          INVITATION AFTER ENVELOPE OPENS
-      ====================================================== */}
-
-      {revealed && (
-        <div
-          className="w-full max-w-2xl bg-[#fffdf8]
-          text-center text-[#687064]
-          animate-[fadeIn_1.2s_ease-in]"
-        >
-
-          {/* INTRO */}
-          <section
-            className="min-h-screen flex flex-col
-            items-center justify-center px-7 py-20"
-          >
-
-            <p className="text-xs tracking-[0.4em]
-              uppercase text-[#9b8565]"
-            >
-              With the blessings of our families
-            </p>
-
-            <div className="mt-12">
-              <p className="font-serif italic text-2xl">
-                Two hearts,
-              </p>
-
-              <p className="font-serif italic text-2xl">
-                one journey,
-              </p>
-
-              <p className="font-serif italic text-2xl">
-                forever.
-              </p>
+      ) : (
+        <div className="invitation-content">
+          {/* HERO */}
+          <section className="invitation-hero">
+            <div className="hero-art">
+              <img
+                src="/wedding-hero.png"
+                alt="Karthick and Pavithra wedding invitation with floral arch, lake and swans"
+              />
             </div>
 
-
-            {/* GROOM */}
-            <h1
-              className="mt-20 font-serif italic
-              text-4xl sm:text-5xl
-              text-[#72786d]"
-            >
-              Karthick Balu B.E
-            </h1>
-
-
-            {/* & */}
-            <div className="flex justify-center
-              items-center gap-5 my-9"
-            >
-              <span className="h-px w-16 bg-[#d4c7b4]" />
-
-              <span className="font-serif text-4xl text-[#bb9a5b]">
-                &
-              </span>
-
-              <span className="h-px w-16 bg-[#d4c7b4]" />
-            </div>
-
-
-            {/* BRIDE */}
-            <h1
-              className="font-serif italic
-              text-4xl sm:text-5xl
-              text-[#72786d]"
-            >
-              Pavithra Perumal B.C.A
-            </h1>
-
-            <div className="mt-16 text-[#bb9a5b] text-3xl">
-              ♥
-            </div>
-
-            <p className="mt-8 text-xs tracking-[0.3em]
-              uppercase text-[#9b8565]"
-            >
-              Scroll to reveal
-            </p>
-
-            <div className="mt-6 animate-bounce text-xl">
-              ↓
-            </div>
-
+            <div className="hero-shimmer" aria-hidden="true" />
           </section>
 
+          {/* STORY */}
+          <section className="story-section">
+            <div className="section-ornament">✦</div>
 
-          {/* =================================================
-              SAVE THE DATE
-          ================================================== */}
+            <p className="eyebrow">A BEAUTIFUL CHAPTER BEGINS</p>
 
-          <section className="px-6 py-20">
+            <h2>Our Story</h2>
 
-            <p className="text-xs tracking-[0.4em]
-              uppercase text-[#9b8565]"
-            >
-              The Date
+            <div className="heart-divider">
+              <span />
+              <b>♡</b>
+              <span />
+            </div>
+
+            <p className="story-copy">
+              Two hearts, one journey and a lifetime of beautiful memories
+              waiting to be made.
             </p>
 
-            <h2
-              className="mt-5 font-serif italic
-              text-5xl text-[#687064]"
-            >
-              Save the Date
-            </h2>
-
-            <p className="mt-5 font-serif italic text-lg">
-              Tap below to reveal
+            <p className="story-copy secondary">
+              We would be delighted to have you with us as we begin our
+              forever.
             </p>
+          </section>
 
+          {/* COUNTDOWN */}
+          <section className="countdown-section">
+            <div className="section-heading-dark">
+              <p className="eyebrow light">COUNTING EVERY MOMENT</p>
 
-            <div className="mt-12 grid grid-cols-2 gap-5 px-2">
+              <h2>Until We Say “I Do”</h2>
 
-              {/* RECEPTION */}
-              <button
-                onClick={() => setDateRevealed(true)}
-                className="min-h-48 border border-[#d8ccb9]
-                rounded-2xl bg-[#fffdf8]
-                shadow-sm transition
-                flex flex-col items-center justify-center"
+              <div className="heading-heart">♡</div>
+            </div>
+
+            <div className="countdown">
+              <div className="countdown-item">
+                <strong>{String(timeLeft.days).padStart(2, "0")}</strong>
+                <span>DAYS</span>
+              </div>
+
+              <div className="countdown-item">
+                <strong>{String(timeLeft.hours).padStart(2, "0")}</strong>
+                <span>HOURS</span>
+              </div>
+
+              <div className="countdown-item">
+                <strong>{String(timeLeft.minutes).padStart(2, "0")}</strong>
+                <span>MINUTES</span>
+              </div>
+
+              <div className="countdown-item">
+                <strong>{String(timeLeft.seconds).padStart(2, "0")}</strong>
+                <span>SECONDS</span>
+              </div>
+            </div>
+          </section>
+
+          {/* EVENTS */}
+          <section className="events-section">
+            <div className="section-heading">
+              <p className="eyebrow">SAVE THE DATE</p>
+
+              <h2>Our Special Days</h2>
+
+              <div className="heading-heart">♡</div>
+            </div>
+
+            <div className="event-list">
+              <article className="event-card">
+                <div className="event-top-ornament">✦</div>
+
+                <p className="event-type">RECEPTION</p>
+
+                <h3>24 October 2026</h3>
+
+                <p className="event-day">Saturday</p>
+
+                <div className="event-divider" />
+
+                <div className="event-info">
+                  <span>TIME</span>
+                  <strong>6:00 PM</strong>
+                </div>
+
+                <div className="event-info">
+                  <span>VENUE</span>
+                  <strong>Ayya Koil Mandapam</strong>
+                </div>
+              </article>
+
+              <article className="event-card featured">
+                <div className="event-top-ornament">♡</div>
+
+                <p className="event-type">WEDDING CEREMONY</p>
+
+                <h3>25 October 2026</h3>
+
+                <p className="event-day">Sunday</p>
+
+                <div className="event-divider" />
+
+                <div className="event-info">
+                  <span>TIME</span>
+                  <strong>6:00 AM</strong>
+                </div>
+
+                <div className="event-info">
+                  <span>VENUE</span>
+                  <strong>Ayya Koil Mandapam</strong>
+                </div>
+              </article>
+            </div>
+          </section>
+
+          {/* LOCATION */}
+          <section className="location-section">
+            <div className="location-card">
+              <div className="corner corner-top-left" />
+              <div className="corner corner-top-right" />
+              <div className="corner corner-bottom-left" />
+              <div className="corner corner-bottom-right" />
+
+              <p className="eyebrow">WHERE WE CELEBRATE</p>
+
+              <h2>Ayya Koil Mandapam</h2>
+
+              <div className="location-symbol">⌖</div>
+
+              <p className="location-copy">
+                Join us for these beautiful moments as we celebrate love,
+                togetherness and the beginning of our forever.
+              </p>
+
+              <a
+                href="https://maps.app.goo.gl/g5xgv4uWbGBPFEwU6?g_st=ipc"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="map-button"
               >
-
-                {!dateRevealed ? (
-                  <>
-                    <span className="text-xs tracking-[0.3em]">
-                      TAP
-                    </span>
-
-                    <span className="mt-5 text-3xl text-[#bb9a5b]">
-                      ✦
-                    </span>
-
-                    <span className="mt-4 font-serif italic text-xl">
-                      Reception
-                    </span>
-                  </>
-                ) : (
-                  <>
-                    <span className="text-xs tracking-[0.2em]">
-                      RECEPTION
-                    </span>
-
-                    <span className="mt-4 font-serif text-3xl">
-                      24
-                    </span>
-
-                    <span className="font-serif">
-                      October 2026
-                    </span>
-
-                    <span className="mt-2 text-sm tracking-[0.2em]">
-                      6:00 PM
-                    </span>
-                  </>
-                )}
-
-              </button>
-
-
-              {/* WEDDING */}
-              <button
-                onClick={() => setDateRevealed(true)}
-                className="min-h-48 border border-[#d8ccb9]
-                rounded-2xl bg-[#fffdf8]
-                shadow-sm transition
-                flex flex-col items-center justify-center"
-              >
-
-                {!dateRevealed ? (
-                  <>
-                    <span className="text-xs tracking-[0.3em]">
-                      TAP
-                    </span>
-
-                    <span className="mt-5 text-3xl text-[#bb9a5b]">
-                      ♥
-                    </span>
-
-                    <span className="mt-4 font-serif italic text-xl">
-                      Wedding
-                    </span>
-                  </>
-                ) : (
-                  <>
-                    <span className="text-xs tracking-[0.2em]">
-                      WEDDING
-                    </span>
-
-                    <span className="mt-4 font-serif text-3xl">
-                      25
-                    </span>
-
-                    <span className="font-serif">
-                      October 2026
-                    </span>
-
-                    <span className="mt-2 text-sm tracking-[0.2em]">
-                      6:00 AM
-                    </span>
-                  </>
-                )}
-
-              </button>
-
+                VIEW LOCATION
+              </a>
             </div>
-
           </section>
-
-
-          {/* VENUE */}
-          <section
-            className="mx-6 px-6 py-14
-            border border-[#dfd3c1]"
-          >
-
-            <p className="text-xs tracking-[0.4em]
-              uppercase text-[#9b8565]"
-            >
-              Venue
-            </p>
-
-            <h2 className="mt-5 font-serif text-3xl">
-              Ayya Koil Mandapam
-            </h2>
-
-           <a
-  href="https://maps.app.goo.gl/g5xgv4uWbGBPFEwU6?g_st=ipc"
-  target="_blank"
-  rel="noopener noreferrer"
-  className="mt-8 inline-block border border-[#bb9a5b] px-8 py-3 text-xs tracking-[0.25em] uppercase transition-all duration-300 hover:bg-[#bb9a5b] hover:text-white"
->
-  View Location
-</a>
-
-          </section>
-
 
           {/* CLOSING */}
-          <section className="px-8 pt-20 pb-24">
+          <section className="closing-section">
+            <div className="closing-frame">
+              <span className="closing-star">✦</span>
 
-            <div className="text-[#bb9a5b] text-2xl">
-              ♥
+              <p className="eyebrow light">WITH LOVE</p>
+
+              <h2>
+                Karthick
+                <span>&amp;</span>
+                Pavithra
+              </h2>
+
+              <div className="closing-line">
+                <span />
+                <b>♡</b>
+                <span />
+              </div>
+
+              <p className="closing-date">24 · 25 OCTOBER 2026</p>
+
+              <p className="closing-text">
+                Two hearts.
+                <br />
+                One journey.
+                <br />
+                Forever.
+              </p>
+
+              <div className="closing-heart">♡</div>
             </div>
-
-            <p className="mt-8 font-serif italic text-xl">
-              With love,
-            </p>
-
-            <p className="mt-3 font-serif text-xl">
-              Karthick & Pavithra
-            </p>
-
           </section>
 
+          <footer className="site-footer">
+            <p>MADE WITH LOVE</p>
+            <strong>K &amp; P</strong>
+            <span>♡</span>
+          </footer>
         </div>
       )}
-
     </main>
   );
 }
